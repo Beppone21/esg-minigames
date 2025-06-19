@@ -1,0 +1,258 @@
+{
+  "quickQuizQuestions": [
+    {
+      "id": 1,
+      "category": "ESG Basics",
+      "difficulty": "easy",
+      "question": "What does ESG stand for?",
+      "options": [
+        "Environmental, Social, Governance",
+        "Economic, Strategic, Growth", 
+        "Equity, Sustainability, Global",
+        "Energy, Solar, Green"
+      ],
+      "correct": 0,
+      "explanation": "ESG stands for Environmental, Social, and Governance factors in sustainable investing.",
+      "tokens": 1
+    },
+    {
+      "id": 2,
+      "category": "Environmental",
+      "difficulty": "easy",
+      "question": "Which is a key Environmental factor?",
+      "options": [
+        "Board diversity",
+        "Carbon emissions",
+        "Executive pay",
+        "Shareholder rights"
+      ],
+      "correct": 1,
+      "explanation": "Carbon emissions are a fundamental environmental factor in ESG analysis.",
+      "tokens": 1
+    },
+    {
+      "id": 3,
+      "category": "Social",
+      "difficulty": "easy",
+      "question": "Social factors in ESG include:",
+      "options": [
+        "Carbon footprint",
+        "Employee treatment",
+        "Board structure",
+        "Energy usage"
+      ],
+      "correct": 1,
+      "explanation": "Employee treatment and workplace diversity are core social factors.",
+      "tokens": 1
+    },
+    {
+      "id": 4,
+      "category": "Governance",
+      "difficulty": "easy",
+      "question": "Governance focuses on:",
+      "options": [
+        "Environmental impact",
+        "Community relations",
+        "Corporate leadership",
+        "Product features"
+      ],
+      "correct": 2,
+      "explanation": "Governance examines corporate leadership and board oversight.",
+      "tokens": 1
+    },
+    {
+      "id": 5,
+      "category": "ESG ETFs",
+      "difficulty": "easy",
+      "question": "ICLN focuses on:",
+      "options": [
+        "US ESG companies",
+        "Clean energy",
+        "European stocks",
+        "Technology"
+      ],
+      "correct": 1,
+      "explanation": "ICLN is the iShares Global Clean Energy ETF.",
+      "tokens": 1
+    },
+    {
+      "id": 6,
+      "category": "ESG Investing",
+      "difficulty": "easy",
+      "question": "ESG investing aims for:",
+      "options": [
+        "Quick profits only",
+        "Sustainable returns with positive impact",
+        "Risk avoidance",
+        "Market timing"
+      ],
+      "correct": 1,
+      "explanation": "ESG investing balances financial returns with environmental and social impact.",
+      "tokens": 1
+    },
+    {
+      "id": 7,
+      "category": "ESG Basics",
+      "difficulty": "easy",
+      "question": "Greenwashing means:",
+      "options": [
+        "Cleaning pollution",
+        "Misleading environmental claims",
+        "Investing in green tech",
+        "Government policy"
+      ],
+      "correct": 1,
+      "explanation": "Greenwashing is making false or misleading environmental claims.",
+      "tokens": 1
+    },
+    {
+      "id": 8,
+      "category": "ESG Performance",
+      "difficulty": "easy",
+      "question": "ESG investing has shown to:",
+      "options": [
+        "Always underperform",
+        "Match or outperform traditional investing",
+        "Only work short-term",
+        "Ignore returns"
+      ],
+      "correct": 1,
+      "explanation": "Studies show ESG investing often matches or beats traditional returns.",
+      "tokens": 1
+    },
+    {
+      "id": 9,
+      "category": "Environmental",
+      "difficulty": "medium",
+      "question": "Scope 1, 2, and 3 emissions refer to:",
+      "options": [
+        "Time periods",
+        "Direct, indirect energy, and value chain emissions",
+        "Company sizes",
+        "Regional standards"
+      ],
+      "correct": 1,
+      "explanation": "The three scopes cover direct emissions, energy-related, and supply chain emissions.",
+      "tokens": 1
+    },
+    {
+      "id": 10,
+      "category": "Social",
+      "difficulty": "medium",
+      "question": "Stakeholder capitalism emphasizes:",
+      "options": [
+        "Shareholder profits only",
+        "All stakeholder interests",
+        "Government control",
+        "No profits"
+      ],
+      "correct": 1,
+      "explanation": "Stakeholder capitalism considers employees, customers, communities, and shareholders.",
+      "tokens": 1
+    },
+    {
+      "id": 11,
+      "category": "Governance",
+      "difficulty": "medium",
+      "question": "Board diversity includes:",
+      "options": [
+        "Gender only",
+        "Ethnicity only",
+        "Gender, ethnicity, age, skills, and experience",
+        "Background only"
+      ],
+      "correct": 2,
+      "explanation": "Comprehensive board diversity covers multiple dimensions.",
+      "tokens": 1
+    },
+    {
+      "id": 12,
+      "category": "ESG ETFs",
+      "difficulty": "medium",
+      "question": "ESGU focuses on:",
+      "options": [
+        "European companies",
+        "US companies with strong ESG",
+        "Global clean energy",
+        "Emerging markets"
+      ],
+      "correct": 1,
+      "explanation": "ESGU targets US companies with strong ESG characteristics.",
+      "tokens": 1
+    },
+    {
+      "id": 13,
+      "category": "ESG Strategies",
+      "difficulty": "medium",
+      "question": "ESG integration means:",
+      "options": [
+        "Only ESG funds",
+        "Avoiding traditional investments",
+        "Including ESG in traditional analysis",
+        "Ignoring returns"
+      ],
+      "correct": 2,
+      "explanation": "ESG integration incorporates ESG factors into standard investment analysis.",
+      "tokens": 1
+    },
+    {
+      "id": 14,
+      "category": "Impact Investing",
+      "difficulty": "medium",
+      "question": "Impact investing targets:",
+      "options": [
+        "Financial returns only",
+        "Specific positive outcomes with returns",
+        "No ESG factors",
+        "Negative screening only"
+      ],
+      "correct": 1,
+      "explanation": "Impact investing specifically aims for measurable positive impact alongside returns.",
+      "tokens": 1
+    },
+    {
+      "id": 15,
+      "category": "ESG Data",
+      "difficulty": "medium",
+      "question": "ESG materiality refers to:",
+      "options": [
+        "All factors are equal",
+        "Environmental only",
+        "Factors impacting business performance", 
+        "Legal requirements only"
+      ],
+      "correct": 2,
+      "explanation": "Material ESG factors are those likely to impact financial performance.",
+      "tokens": 1
+    }
+  ],
+  
+  "weeklyQuestions": [
+    {
+      "id": 101,
+      "category": "Portfolio Challenge",
+      "difficulty": "hard",
+      "question": "Building an optimal ESG portfolio requires balancing:",
+      "options": [
+        "Only ESG scores",
+        "Only financial returns",
+        "ESG scores, returns, risk, and diversification",
+        "Only sector concentration"
+      ],
+      "correct": 2,
+      "explanation": "Effective ESG portfolios balance multiple factors for optimal risk-adjusted returns.",
+      "tokens": 5
+    },
+    {
+      "id": 102,
+      "category": "ESG Crisis",
+      "difficulty": "hard", 
+      "question": "When a company faces an ESG crisis, investors should:",
+      "options": [
+        "Immediately sell all holdings",
+        "Ignore the situation completely",
+        "Assess response quality and long-term impact",
+        "Only focus on short-term price moves"
+      ],
+      "correct": 2,
+      "explanation": "ESG cr
