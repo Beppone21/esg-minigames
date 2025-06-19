@@ -444,466 +444,549 @@
     </div>
 
     <script>
-        // === LOCAL STORAGE FUNCTIONS ===
-        function getTotalTokens() {
-            return parseInt(localStorage.getItem('esg_total_tokens')) || 0;
-        }
-
-        function setTotalTokens(amount) {
-            const maxTokens = 100;
-            const finalAmount = Math.min(amount, maxTokens);
-            localStorage.setItem('esg_total_tokens', finalAmount);
-            updateTokenDisplay();
-            return finalAmount;
-        }
-
-        function addTokens(amount) {
-            const current = getTotalTokens();
-            const newTotal = setTotalTokens(current + amount);
-            updateStats();
-            return newTotal;
-        }
-
-        function updateTokenDisplay() {
-            const tokenElements = document.querySelectorAll('#totalTokens');
-            const tokens = getTotalTokens();
-            tokenElements.forEach(element => {
-                if (element) element.textContent = tokens;
-            });
-        }
-
-        function updateStats() {
-            document.getElementById('totalTokens').textContent = getTotalTokens();
+        // === WAIT FOR DOM TO LOAD ===
+        document.addEventListener('DOMContentLoaded', function() {
             
-            const today = new Date().toISOString().split('T')[0];
-            const todayQuizzes = parseInt(localStorage.getItem(`esg_quickQuiz_plays_${today}`)) || 0;
-            document.getElementById('todayQuizzes').textContent = todayQuizzes;
-            
-            const accuracy = parseInt(localStorage.getItem('esg_accuracy')) || 0;
-            document.getElementById('quizAccuracy').textContent = `${accuracy}%`;
-            
-            const streak = parseInt(localStorage.getItem('esg_streak')) || 0;
-            document.getElementById('quizStreak').textContent = streak;
-        }
-
-        function canPlayGame(gameType) {
-            const today = new Date().toISOString().split('T')[0];
-            const playKey = `esg_${gameType}_plays_${today}`;
-            const plays = parseInt(localStorage.getItem(playKey)) || 0;
-            const limit = 3; // Free user limit
-            
-            return {
-                canPlay: plays < limit,
-                plays: plays,
-                limit: limit,
-                remaining: Math.max(0, limit - plays)
-            };
-        }
-
-        function recordGamePlay(gameType) {
-            const today = new Date().toISOString().split('T')[0];
-            const playKey = `esg_${gameType}_plays_${today}`;
-            const plays = parseInt(localStorage.getItem(playKey)) || 0;
-            localStorage.setItem(playKey, plays + 1);
-        }
-
-        function updateAccuracy(correct, total) {
-            const accuracy = Math.round((correct / total) * 100);
-            localStorage.setItem('esg_accuracy', accuracy);
-        }
-
-        function updateStreak(won) {
-            const currentStreak = parseInt(localStorage.getItem('esg_streak')) || 0;
-            const newStreak = won ? currentStreak + 1 : 0;
-            localStorage.setItem('esg_streak', newStreak);
-        }
-
-        // Quiz Game Logic
-        class ESGQuiz {
-            constructor() {
-                this.questions = [];
-                this.currentQuestionIndex = 0;
-                this.score = 0;
-                this.selectedAnswer = null;
-                this.startTime = null;
-                this.timeLimit = 120; // 2 minutes
-                this.timer = null;
-                this.gameActive = false;
-                
-                this.init();
+            // === LOCAL STORAGE FUNCTIONS ===
+            function getTotalTokens() {
+                return parseInt(localStorage.getItem('esg_total_tokens')) || 0;
             }
 
-            async init() {
-                this.loadQuestions();
+            function setTotalTokens(amount) {
+                const maxTokens = 100;
+                const finalAmount = Math.min(amount, maxTokens);
+                localStorage.setItem('esg_total_tokens', finalAmount);
+                updateTokenDisplay();
+                return finalAmount;
+            }
+
+            function addTokens(amount) {
+                const current = getTotalTokens();
+                const newTotal = setTotalTokens(current + amount);
                 updateStats();
-                this.checkDailyLimit();
+                showTokenAnimation(amount);
+                return newTotal;
             }
 
-            loadQuestions() {
-                // Integrated questions - no external dependencies
-                const integratedQuestions = [
-                    {
-                        id: 1,
-                        category: "ESG Basics",
-                        question: "What does ESG stand for?",
-                        options: [
-                            "Environmental, Social, Governance",
-                            "Economic, Strategic, Growth", 
-                            "Equity, Sustainability, Global",
-                            "Energy, Solar, Green"
-                        ],
-                        correct: 0,
-                        explanation: "ESG stands for Environmental, Social, and Governance factors in sustainable investing."
-                    },
-                    {
-                        id: 2,
-                        category: "Environmental",
-                        question: "Which is a key Environmental factor?",
-                        options: [
-                            "Board diversity",
-                            "Carbon emissions",
-                            "Executive pay",
-                            "Shareholder rights"
-                        ],
-                        correct: 1,
-                        explanation: "Carbon emissions are a fundamental environmental factor in ESG analysis."
-                    },
-                    {
-                        id: 3,
-                        category: "Social",
-                        question: "Social factors in ESG include:",
-                        options: [
-                            "Carbon footprint",
-                            "Employee treatment",
-                            "Board structure",
-                            "Energy usage"
-                        ],
-                        correct: 1,
-                        explanation: "Employee treatment and workplace diversity are core social factors."
-                    },
-                    {
-                        id: 4,
-                        category: "Governance",
-                        question: "Governance focuses on:",
-                        options: [
-                            "Environmental impact",
-                            "Community relations",
-                            "Corporate leadership",
-                            "Product features"
-                        ],
-                        correct: 2,
-                        explanation: "Governance examines corporate leadership and board oversight."
-                    },
-                    {
-                        id: 5,
-                        category: "ESG ETFs",
-                        question: "ICLN focuses on:",
-                        options: [
-                            "US ESG companies",
-                            "Clean energy",
-                            "European stocks",
-                            "Technology"
-                        ],
-                        correct: 1,
-                        explanation: "ICLN is the iShares Global Clean Energy ETF."
-                    },
-                    {
-                        id: 6,
-                        category: "ESG Investing",
-                        question: "ESG investing aims for:",
-                        options: [
-                            "Quick profits only",
-                            "Sustainable returns with positive impact",
-                            "Risk avoidance",
-                            "Market timing"
-                        ],
-                        correct: 1,
-                        explanation: "ESG investing balances financial returns with environmental and social impact."
-                    },
-                    {
-                        id: 7,
-                        category: "ESG Basics",
-                        question: "Greenwashing means:",
-                        options: [
-                            "Cleaning pollution",
-                            "Misleading environmental claims",
-                            "Investing in green tech",
-                            "Government policy"
-                        ],
-                        correct: 1,
-                        explanation: "Greenwashing is making false or misleading environmental claims."
-                    },
-                    {
-                        id: 8,
-                        category: "ESG Performance",
-                        question: "ESG investing has shown to:",
-                        options: [
-                            "Always underperform",
-                            "Match or outperform traditional investing",
-                            "Only work short-term",
-                            "Ignore returns"
-                        ],
-                        correct: 1,
-                        explanation: "Studies show ESG investing often matches or beats traditional returns."
-                    }
-                ];
+            function updateTokenDisplay() {
+                const tokenElements = document.querySelectorAll('#totalTokens');
+                const tokens = getTotalTokens();
+                tokenElements.forEach(element => {
+                    if (element) element.textContent = tokens;
+                });
+            }
 
-                try {
-                    // Get 5 random questions for the quiz
-                    this.questions = this.shuffleArray(integratedQuestions).slice(0, 5);
+            function updateStats() {
+                const totalTokensEl = document.getElementById('totalTokens');
+                if (totalTokensEl) totalTokensEl.textContent = getTotalTokens();
+                
+                const today = new Date().toISOString().split('T')[0];
+                const todayQuizzes = parseInt(localStorage.getItem(`esg_quickQuiz_plays_${today}`)) || 0;
+                const todayQuizzesEl = document.getElementById('todayQuizzes');
+                if (todayQuizzesEl) todayQuizzesEl.textContent = todayQuizzes;
+                
+                const accuracy = parseInt(localStorage.getItem('esg_accuracy')) || 0;
+                const quizAccuracyEl = document.getElementById('quizAccuracy');
+                if (quizAccuracyEl) quizAccuracyEl.textContent = `${accuracy}%`;
+                
+                const streak = parseInt(localStorage.getItem('esg_streak')) || 0;
+                const quizStreakEl = document.getElementById('quizStreak');
+                if (quizStreakEl) quizStreakEl.textContent = streak;
+            }
+
+            function canPlayGame(gameType) {
+                const today = new Date().toISOString().split('T')[0];
+                const playKey = `esg_${gameType}_plays_${today}`;
+                const plays = parseInt(localStorage.getItem(playKey)) || 0;
+                const limit = 3; // Free user limit
+                
+                return {
+                    canPlay: plays < limit,
+                    plays: plays,
+                    limit: limit,
+                    remaining: Math.max(0, limit - plays)
+                };
+            }
+
+            function recordGamePlay(gameType) {
+                const today = new Date().toISOString().split('T')[0];
+                const playKey = `esg_${gameType}_plays_${today}`;
+                const plays = parseInt(localStorage.getItem(playKey)) || 0;
+                localStorage.setItem(playKey, plays + 1);
+            }
+
+            function updateAccuracy(correct, total) {
+                const accuracy = Math.round((correct / total) * 100);
+                localStorage.setItem('esg_accuracy', accuracy);
+            }
+
+            function updateStreak(won) {
+                const currentStreak = parseInt(localStorage.getItem('esg_streak')) || 0;
+                const newStreak = won ? currentStreak + 1 : 0;
+                localStorage.setItem('esg_streak', newStreak);
+            }
+
+            function showTokenAnimation(amount) {
+                const animation = document.createElement('div');
+                animation.style.cssText = `
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background: linear-gradient(45deg, #10B981, #34D399);
+                    color: white;
+                    padding: 1rem 2rem;
+                    border-radius: 20px;
+                    font-size: 1.5rem;
+                    font-weight: bold;
+                    z-index: 1000;
+                    animation: bounceIn 0.5s ease-out;
+                    box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4);
+                `;
+                animation.innerHTML = `+${amount} 🪙`;
+                document.body.appendChild(animation);
+                
+                setTimeout(() => animation.remove(), 2000);
+            }
+
+            // Quiz Game Logic
+            class ESGQuiz {
+                constructor() {
+                    this.questions = [];
+                    this.currentQuestionIndex = 0;
+                    this.score = 0;
+                    this.selectedAnswer = null;
+                    this.startTime = null;
+                    this.timeLimit = 120; // 2 minutes
+                    this.timer = null;
+                    this.gameActive = false;
                     
-                    if (this.questions.length > 0) {
-                        this.startQuiz();
-                    } else {
-                        this.showError("No questions available. Please try again later.");
+                    this.init();
+                }
+
+                init() {
+                    this.loadQuestions();
+                    updateStats();
+                    this.checkDailyLimit();
+                }
+
+                loadQuestions() {
+                    // Integrated questions
+                    const integratedQuestions = [
+                        {
+                            id: 1,
+                            category: "ESG Basics",
+                            question: "What does ESG stand for?",
+                            options: [
+                                "Environmental, Social, Governance",
+                                "Economic, Strategic, Growth", 
+                                "Equity, Sustainability, Global",
+                                "Energy, Solar, Green"
+                            ],
+                            correct: 0,
+                            explanation: "ESG stands for Environmental, Social, and Governance factors in sustainable investing."
+                        },
+                        {
+                            id: 2,
+                            category: "Environmental",
+                            question: "Which is a key Environmental factor?",
+                            options: [
+                                "Board diversity",
+                                "Carbon emissions",
+                                "Executive pay",
+                                "Shareholder rights"
+                            ],
+                            correct: 1,
+                            explanation: "Carbon emissions are a fundamental environmental factor in ESG analysis."
+                        },
+                        {
+                            id: 3,
+                            category: "Social",
+                            question: "Social factors in ESG include:",
+                            options: [
+                                "Carbon footprint",
+                                "Employee treatment",
+                                "Board structure",
+                                "Energy usage"
+                            ],
+                            correct: 1,
+                            explanation: "Employee treatment and workplace diversity are core social factors."
+                        },
+                        {
+                            id: 4,
+                            category: "Governance",
+                            question: "Governance focuses on:",
+                            options: [
+                                "Environmental impact",
+                                "Community relations",
+                                "Corporate leadership",
+                                "Product features"
+                            ],
+                            correct: 2,
+                            explanation: "Governance examines corporate leadership and board oversight."
+                        },
+                        {
+                            id: 5,
+                            category: "ESG ETFs",
+                            question: "ICLN focuses on:",
+                            options: [
+                                "US ESG companies",
+                                "Clean energy",
+                                "European stocks",
+                                "Technology"
+                            ],
+                            correct: 1,
+                            explanation: "ICLN is the iShares Global Clean Energy ETF."
+                        },
+                        {
+                            id: 6,
+                            category: "ESG Investing",
+                            question: "ESG investing aims for:",
+                            options: [
+                                "Quick profits only",
+                                "Sustainable returns with positive impact",
+                                "Risk avoidance",
+                                "Market timing"
+                            ],
+                            correct: 1,
+                            explanation: "ESG investing balances financial returns with environmental and social impact."
+                        },
+                        {
+                            id: 7,
+                            category: "ESG Basics",
+                            question: "Greenwashing means:",
+                            options: [
+                                "Cleaning pollution",
+                                "Misleading environmental claims",
+                                "Investing in green tech",
+                                "Government policy"
+                            ],
+                            correct: 1,
+                            explanation: "Greenwashing is making false or misleading environmental claims."
+                        },
+                        {
+                            id: 8,
+                            category: "ESG Performance",
+                            question: "ESG investing has shown to:",
+                            options: [
+                                "Always underperform",
+                                "Match or outperform traditional investing",
+                                "Only work short-term",
+                                "Ignore returns"
+                            ],
+                            correct: 1,
+                            explanation: "Studies show ESG investing often matches or beats traditional returns."
+                        }
+                    ];
+
+                    try {
+                        // Get 5 random questions for the quiz
+                        this.questions = this.shuffleArray(integratedQuestions).slice(0, 5);
+                        
+                        if (this.questions.length > 0) {
+                            this.startQuiz();
+                        } else {
+                            this.showError("No questions available. Please try again later.");
+                        }
+                    } catch (error) {
+                        console.error('Error loading questions:', error);
+                        this.showError("Failed to load questions. Please check your connection.");
                     }
-                } catch (error) {
-                    console.error('Error loading questions:', error);
-                    this.showError("Failed to load questions. Please check your connection.");
                 }
-            }
 
-            shuffleArray(array) {
-                const shuffled = [...array];
-                for (let i = shuffled.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+                shuffleArray(array) {
+                    const shuffled = [...array];
+                    for (let i = shuffled.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+                    }
+                    return shuffled;
                 }
-                return shuffled;
-            }
 
-            checkDailyLimit() {
-                const availability = canPlayGame('quickQuiz');
-                
-                if (!availability.canPlay) {
-                    document.getElementById('limitWarning').style.display = 'block';
-                    document.getElementById('quizGame').style.display = 'none';
-                    return false;
-                }
-                
-                return true;
-            }
-
-            startQuiz() {
-                if (!this.checkDailyLimit()) return;
-                
-                this.gameActive = true;
-                this.startTime = Date.now();
-                this.currentQuestionIndex = 0;
-                this.score = 0;
-                this.selectedAnswer = null;
-                
-                this.startTimer();
-                this.loadCurrentQuestion();
-            }
-
-            startTimer() {
-                let timeLeft = this.timeLimit;
-                const timerElement = document.getElementById('timeRemaining');
-                
-                this.timer = setInterval(() => {
-                    timeLeft--;
-                    const minutes = Math.floor(timeLeft / 60);
-                    const seconds = timeLeft % 60;
-                    timerElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                checkDailyLimit() {
+                    const availability = canPlayGame('quickQuiz');
                     
-                    if (timeLeft <= 30) {
-                        timerElement.classList.add('time-warning');
+                    if (!availability.canPlay) {
+                        const limitWarning = document.getElementById('limitWarning');
+                        const quizGame = document.getElementById('quizGame');
+                        if (limitWarning) limitWarning.style.display = 'block';
+                        if (quizGame) quizGame.style.display = 'none';
+                        return false;
                     }
                     
-                    if (timeLeft <= 0) {
-                        this.timeUp();
-                    }
-                }, 1000);
-            }
+                    return true;
+                }
 
-            timeUp() {
-                clearInterval(this.timer);
-                this.gameActive = false;
-                this.showResults();
-            }
+                startQuiz() {
+                    if (!this.checkDailyLimit()) return;
+                    
+                    this.gameActive = true;
+                    this.startTime = Date.now();
+                    this.currentQuestionIndex = 0;
+                    this.score = 0;
+                    this.selectedAnswer = null;
+                    
+                    this.startTimer();
+                    this.loadCurrentQuestion();
+                }
 
-            loadCurrentQuestion() {
-                if (this.currentQuestionIndex >= this.questions.length) {
+                startTimer() {
+                    let timeLeft = this.timeLimit;
+                    const timerElement = document.getElementById('timeRemaining');
+                    
+                    this.timer = setInterval(() => {
+                        timeLeft--;
+                        const minutes = Math.floor(timeLeft / 60);
+                        const seconds = timeLeft % 60;
+                        if (timerElement) {
+                            timerElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                            
+                            if (timeLeft <= 30) {
+                                timerElement.classList.add('time-warning');
+                            }
+                        }
+                        
+                        if (timeLeft <= 0) {
+                            this.timeUp();
+                        }
+                    }, 1000);
+                }
+
+                timeUp() {
+                    clearInterval(this.timer);
+                    this.gameActive = false;
                     this.showResults();
-                    return;
                 }
 
-                const question = this.questions[this.currentQuestionIndex];
-                const progress = ((this.currentQuestionIndex + 1) / this.questions.length) * 100;
-                
-                // Update UI elements
-                document.getElementById('questionNumber').textContent = 
-                    `Question ${this.currentQuestionIndex + 1} of ${this.questions.length}`;
-                document.getElementById('progressFill').style.width = `${progress}%`;
-                document.getElementById('questionCategory').textContent = question.category;
-                document.getElementById('questionText').textContent = question.question;
-                
-                // Load options
-                const optionsContainer = document.getElementById('optionsContainer');
-                optionsContainer.innerHTML = '';
-                
-                question.options.forEach((option, index) => {
-                    const optionElement = document.createElement('div');
-                    optionElement.className = 'option';
-                    optionElement.textContent = option;
-                    optionElement.onclick = () => this.selectOption(index);
-                    optionsContainer.appendChild(optionElement);
-                });
-
-                // Reset state
-                this.selectedAnswer = null;
-                document.getElementById('nextButton').disabled = true;
-                document.getElementById('nextButton').textContent = 
-                    this.currentQuestionIndex === this.questions.length - 1 ? 'Finish Quiz' : 'Next Question';
-            }
-
-            selectOption(optionIndex) {
-                if (!this.gameActive) return;
-                
-                this.selectedAnswer = optionIndex;
-                
-                // Update UI
-                const options = document.querySelectorAll('.option');
-                options.forEach((option, index) => {
-                    option.classList.remove('selected');
-                    if (index === optionIndex) {
-                        option.classList.add('selected');
-                    }
-                });
-                
-                document.getElementById('nextButton').disabled = false;
-            }
-
-            nextQuestion() {
-                if (this.selectedAnswer === null) return;
-                
-                const question = this.questions[this.currentQuestionIndex];
-                const isCorrect = this.selectedAnswer === question.correct;
-                
-                if (isCorrect) {
-                    this.score++;
-                }
-                
-                // Show correct answer
-                const options = document.querySelectorAll('.option');
-                options.forEach((option, index) => {
-                    option.classList.add('disabled');
-                    if (index === question.correct) {
-                        option.classList.add('correct');
-                    } else if (index === this.selectedAnswer && !isCorrect) {
-                        option.classList.add('wrong');
-                    }
-                });
-                
-                // Show explanation
-                if (question.explanation) {
-                    const explanationElement = document.createElement('div');
-                    explanationElement.className = 'explanation-section';
-                    explanationElement.innerHTML = `
-                        <h4>💡 Explanation</h4>
-                        <p>${question.explanation}</p>
-                    `;
-                    document.getElementById('questionContent').appendChild(explanationElement);
-                }
-                
-                // Wait before next question
-                setTimeout(() => {
-                    this.currentQuestionIndex++;
-                    
+                loadCurrentQuestion() {
                     if (this.currentQuestionIndex >= this.questions.length) {
                         this.showResults();
-                    } else {
-                        this.loadCurrentQuestion();
+                        return;
                     }
-                }, 2000);
+
+                    const question = this.questions[this.currentQuestionIndex];
+                    const progress = ((this.currentQuestionIndex + 1) / this.questions.length) * 100;
+                    
+                    // Update UI elements safely
+                    const questionNumber = document.getElementById('questionNumber');
+                    if (questionNumber) {
+                        questionNumber.textContent = `Question ${this.currentQuestionIndex + 1} of ${this.questions.length}`;
+                    }
+                    
+                    const progressFill = document.getElementById('progressFill');
+                    if (progressFill) {
+                        progressFill.style.width = `${progress}%`;
+                    }
+                    
+                    const questionCategory = document.getElementById('questionCategory');
+                    if (questionCategory) {
+                        questionCategory.textContent = question.category;
+                    }
+                    
+                    const questionText = document.getElementById('questionText');
+                    if (questionText) {
+                        questionText.textContent = question.question;
+                    }
+                    
+                    // Load options
+                    const optionsContainer = document.getElementById('optionsContainer');
+                    if (optionsContainer) {
+                        optionsContainer.innerHTML = '';
+                        
+                        question.options.forEach((option, index) => {
+                            const optionElement = document.createElement('div');
+                            optionElement.className = 'option';
+                            optionElement.textContent = option;
+                            optionElement.onclick = () => this.selectOption(index);
+                            optionsContainer.appendChild(optionElement);
+                        });
+                    }
+
+                    // Reset state
+                    this.selectedAnswer = null;
+                    const nextButton = document.getElementById('nextButton');
+                    if (nextButton) {
+                        nextButton.disabled = true;
+                        nextButton.textContent = this.currentQuestionIndex === this.questions.length - 1 ? 'Finish Quiz' : 'Next Question';
+                    }
+                }
+
+                selectOption(optionIndex) {
+                    if (!this.gameActive) return;
+                    
+                    this.selectedAnswer = optionIndex;
+                    
+                    // Update UI
+                    const options = document.querySelectorAll('.option');
+                    options.forEach((option, index) => {
+                        option.classList.remove('selected');
+                        if (index === optionIndex) {
+                            option.classList.add('selected');
+                        }
+                    });
+                    
+                    const nextButton = document.getElementById('nextButton');
+                    if (nextButton) {
+                        nextButton.disabled = false;
+                    }
+                }
+
+                nextQuestion() {
+                    if (this.selectedAnswer === null) return;
+                    
+                    const question = this.questions[this.currentQuestionIndex];
+                    const isCorrect = this.selectedAnswer === question.correct;
+                    
+                    if (isCorrect) {
+                        this.score++;
+                    }
+                    
+                    // Show correct answer
+                    const options = document.querySelectorAll('.option');
+                    options.forEach((option, index) => {
+                        option.classList.add('disabled');
+                        if (index === question.correct) {
+                            option.classList.add('correct');
+                        } else if (index === this.selectedAnswer && !isCorrect) {
+                            option.classList.add('wrong');
+                        }
+                    });
+                    
+                    // Show explanation
+                    if (question.explanation) {
+                        const explanationElement = document.createElement('div');
+                        explanationElement.className = 'explanation-section';
+                        explanationElement.innerHTML = `
+                            <h4>💡 Explanation</h4>
+                            <p>${question.explanation}</p>
+                        `;
+                        const questionContent = document.getElementById('questionContent');
+                        if (questionContent) {
+                            questionContent.appendChild(explanationElement);
+                        }
+                    }
+                    
+                    // Wait before next question
+                    setTimeout(() => {
+                        this.currentQuestionIndex++;
+                        
+                        if (this.currentQuestionIndex >= this.questions.length) {
+                            this.showResults();
+                        } else {
+                            this.loadCurrentQuestion();
+                        }
+                    }, 2500);
+                }
+
+                showResults() {
+                    clearInterval(this.timer);
+                    this.gameActive = false;
+                    
+                    const endTime = Date.now();
+                    const timeUsed = Math.round((endTime - this.startTime) / 1000);
+                    const accuracy = Math.round((this.score / this.questions.length) * 100);
+                    
+                    // Calculate tokens
+                    const tokensEarned = accuracy >= 80 ? 2 : 1;
+                    
+                    // Update game stats
+                    addTokens(tokensEarned);
+                    recordGamePlay('quickQuiz');
+                    updateAccuracy(this.score, this.questions.length);
+                    updateStreak(accuracy >= 60);
+                    
+                    // Show results screen
+                    const quizGame = document.getElementById('quizGame');
+                    const resultsScreen = document.getElementById('resultsScreen');
+                    
+                    if (quizGame) quizGame.style.display = 'none';
+                    if (resultsScreen) resultsScreen.classList.add('show');
+                    
+                    // Update results display safely
+                    const finalScore = document.getElementById('finalScore');
+                    if (finalScore) finalScore.textContent = `${this.score}/${this.questions.length}`;
+                    
+                    const scorePercentage = document.getElementById('scorePercentage');
+                    if (scorePercentage) scorePercentage.textContent = `${accuracy}%`;
+                    
+                    const tokensEarnedEl = document.getElementById('tokensEarned');
+                    if (tokensEarnedEl) tokensEarnedEl.textContent = tokensEarned;
+                    
+                    const timeUsedEl = document.getElementById('timeUsed');
+                    if (timeUsedEl) timeUsedEl.textContent = `${timeUsed}s`;
+                    
+                    const newStreakEl = document.getElementById('newStreak');
+                    if (newStreakEl) newStreakEl.textContent = parseInt(localStorage.getItem('esg_streak')) || 0;
+                    
+                    // Show random ESG fact
+                    this.showRandomFact();
+                    
+                    // Update stats
+                    updateStats();
+                }
+
+                showRandomFact() {
+                    const facts = [
+                        "ESG investing assets have grown to over $35 trillion globally!",
+                        "Companies with strong ESG practices often outperform their peers.",
+                        "The 'E' in ESG includes climate change, pollution, and resource management.",
+                        "Social factors cover employee treatment, diversity, and community impact.",
+                        "Good governance includes board oversight and business ethics."
+                    ];
+                    
+                    const randomFact = facts[Math.floor(Math.random() * facts.length)];
+                    const randomFactEl = document.getElementById('randomFact');
+                    if (randomFactEl) randomFactEl.textContent = randomFact;
+                }
+
+                showError(message) {
+                    const quizGame = document.getElementById('quizGame');
+                    if (quizGame) {
+                        quizGame.innerHTML = `
+                            <div style="text-align: center; padding: 2rem;">
+                                <h3>❌ Error</h3>
+                                <p>${message}</p>
+                                <button class="btn" onclick="location.reload()">Try Again</button>
+                            </div>
+                        `;
+                    }
+                }
             }
 
-            showResults() {
-                clearInterval(this.timer);
-                this.gameActive = false;
-                
-                const endTime = Date.now();
-                const timeUsed = Math.round((endTime - this.startTime) / 1000);
-                const accuracy = Math.round((this.score / this.questions.length) * 100);
-                
-                // Calculate tokens
-                const tokensEarned = accuracy >= 80 ? 2 : 1;
-                
-                // Update game stats
-                addTokens(tokensEarned);
-                recordGamePlay('quickQuiz');
-                updateAccuracy(this.score, this.questions.length);
-                updateStreak(accuracy >= 60);
-                
-                // Show results screen
-                document.getElementById('quizGame').style.display = 'none';
-                document.getElementById('resultsScreen').classList.add('show');
-                
-                // Update results display
-                document.getElementById('finalScore').textContent = `${this.score}/${this.questions.length}`;
-                document.getElementById('scorePercentage').textContent = `${accuracy}%`;
-                document.getElementById('tokensEarned').textContent = tokensEarned;
-                document.getElementById('timeUsed').textContent = `${timeUsed}s`;
-                document.getElementById('newStreak').textContent = parseInt(localStorage.getItem('esg_streak')) || 0;
-                
-                // Show random ESG fact
-                this.showRandomFact();
-                
-                // Update stats
-                updateStats();
+            // Global functions
+            window.nextQuestion = function() {
+                if (window.quizGame) {
+                    window.quizGame.nextQuestion();
+                }
             }
 
-            showRandomFact() {
-                const facts = [
-                    "ESG investing assets have grown to over $35 trillion globally!",
-                    "Companies with strong ESG practices often outperform their peers.",
-                    "The 'E' in ESG includes climate change, pollution, and resource management.",
-                    "Social factors cover employee treatment, diversity, and community impact.",
-                    "Good governance includes board oversight and business ethics."
-                ];
-                
-                const randomFact = facts[Math.floor(Math.random() * facts.length)];
-                document.getElementById('randomFact').textContent = randomFact;
+            window.playAgain = function() {
+                location.reload();
             }
 
-            showError(message) {
-                document.getElementById('quizGame').innerHTML = `
-                    <div style="text-align: center; padding: 2rem;">
-                        <h3>❌ Error</h3>
-                        <p>${message}</p>
-                        <button class="btn" onclick="location.reload()">Try Again</button>
-                    </div>
-                `;
+            window.goHome = function() {
+                window.location.href = 'index.html';
             }
-        }
 
-        // Global functions
-        function nextQuestion() {
-            if (quizGame) {
-                quizGame.nextQuestion();
+            window.upgradeToPremium = function() {
+                localStorage.setItem('esg_premium_user', 'true');
+                alert('🌟 Premium activated! Enjoy unlimited games!');
+                location.reload();
             }
-        }
 
-        function playAgain() {
-            location.reload();
-        }
-
-        function goHome() {
-            window.location.href = 'index.html';
-        }
-
-        function upgradeToPremium() {
-            localStorage.setItem('esg_premium_user', 'true');
-            alert('🌟 Premium activated! Enjoy unlimited games!');
-            location.reload();
-        }
-
-        // Initialize quiz when page loads
-        let quizGame;
-        document.addEventListener('DOMContentLoaded', () => {
-            quizGame = new ESGQuiz();
+            // Initialize quiz
+            window.quizGame = new ESGQuiz();
+            
+            // Add CSS for animations
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes bounceIn {
+                    0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+                    50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+                    100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+                }
+            `;
+            document.head.appendChild(style);
         });
     </script>
-</body>
 </html>
