@@ -467,13 +467,208 @@
             }
 
             async loadQuestions() {
+                // Integrated questions - no external dependencies
+                const integratedQuestions = [
+                    {
+                        id: 1,
+                        category: "ESG Basics",
+                        question: "What does ESG stand for?",
+                        options: [
+                            "Environmental, Social, Governance",
+                            "Economic, Strategic, Growth", 
+                            "Equity, Sustainability, Global",
+                            "Energy, Solar, Green"
+                        ],
+                        correct: 0,
+                        explanation: "ESG stands for Environmental, Social, and Governance factors in sustainable investing."
+                    },
+                    {
+                        id: 2,
+                        category: "Environmental",
+                        question: "Which is a key Environmental factor?",
+                        options: [
+                            "Board diversity",
+                            "Carbon emissions",
+                            "Executive pay",
+                            "Shareholder rights"
+                        ],
+                        correct: 1,
+                        explanation: "Carbon emissions are a fundamental environmental factor in ESG analysis."
+                    },
+                    {
+                        id: 3,
+                        category: "Social",
+                        question: "Social factors in ESG include:",
+                        options: [
+                            "Carbon footprint",
+                            "Employee treatment",
+                            "Board structure",
+                            "Energy usage"
+                        ],
+                        correct: 1,
+                        explanation: "Employee treatment and workplace diversity are core social factors."
+                    },
+                    {
+                        id: 4,
+                        category: "Governance",
+                        question: "Governance focuses on:",
+                        options: [
+                            "Environmental impact",
+                            "Community relations",
+                            "Corporate leadership",
+                            "Product features"
+                        ],
+                        correct: 2,
+                        explanation: "Governance examines corporate leadership and board oversight."
+                    },
+                    {
+                        id: 5,
+                        category: "ESG ETFs",
+                        question: "ICLN focuses on:",
+                        options: [
+                            "US ESG companies",
+                            "Clean energy",
+                            "European stocks",
+                            "Technology"
+                        ],
+                        correct: 1,
+                        explanation: "ICLN is the iShares Global Clean Energy ETF."
+                    },
+                    {
+                        id: 6,
+                        category: "ESG Investing",
+                        question: "ESG investing aims for:",
+                        options: [
+                            "Quick profits only",
+                            "Sustainable returns with positive impact",
+                            "Risk avoidance",
+                            "Market timing"
+                        ],
+                        correct: 1,
+                        explanation: "ESG investing balances financial returns with environmental and social impact."
+                    },
+                    {
+                        id: 7,
+                        category: "ESG Basics",
+                        question: "Greenwashing means:",
+                        options: [
+                            "Cleaning pollution",
+                            "Misleading environmental claims",
+                            "Investing in green tech",
+                            "Government policy"
+                        ],
+                        correct: 1,
+                        explanation: "Greenwashing is making false or misleading environmental claims."
+                    },
+                    {
+                        id: 8,
+                        category: "ESG Performance",
+                        question: "ESG investing has shown to:",
+                        options: [
+                            "Always underperform",
+                            "Match or outperform traditional investing",
+                            "Only work short-term",
+                            "Ignore returns"
+                        ],
+                        correct: 1,
+                        explanation: "Studies show ESG investing often matches or beats traditional returns."
+                    },
+                    {
+                        id: 9,
+                        category: "Environmental",
+                        question: "Scope 1, 2, and 3 emissions refer to:",
+                        options: [
+                            "Time periods",
+                            "Direct, indirect energy, and value chain emissions",
+                            "Company sizes",
+                            "Regional standards"
+                        ],
+                        correct: 1,
+                        explanation: "The three scopes cover direct emissions, energy-related, and supply chain emissions."
+                    },
+                    {
+                        id: 10,
+                        category: "Social",
+                        question: "Stakeholder capitalism emphasizes:",
+                        options: [
+                            "Shareholder profits only",
+                            "All stakeholder interests",
+                            "Government control",
+                            "No profits"
+                        ],
+                        correct: 1,
+                        explanation: "Stakeholder capitalism considers employees, customers, communities, and shareholders."
+                    },
+                    {
+                        id: 11,
+                        category: "Governance",
+                        question: "Board diversity includes:",
+                        options: [
+                            "Gender only",
+                            "Ethnicity only",
+                            "Gender, ethnicity, age, skills, and experience",
+                            "Background only"
+                        ],
+                        correct: 2,
+                        explanation: "Comprehensive board diversity covers multiple dimensions."
+                    },
+                    {
+                        id: 12,
+                        category: "ESG ETFs",
+                        question: "ESGU focuses on:",
+                        options: [
+                            "European companies",
+                            "US companies with strong ESG",
+                            "Global clean energy",
+                            "Emerging markets"
+                        ],
+                        correct: 1,
+                        explanation: "ESGU targets US companies with strong ESG characteristics."
+                    },
+                    {
+                        id: 13,
+                        category: "ESG Strategies",
+                        question: "ESG integration means:",
+                        options: [
+                            "Only ESG funds",
+                            "Avoiding traditional investments",
+                            "Including ESG in traditional analysis",
+                            "Ignoring returns"
+                        ],
+                        correct: 2,
+                        explanation: "ESG integration incorporates ESG factors into standard investment analysis."
+                    },
+                    {
+                        id: 14,
+                        category: "Impact Investing",
+                        question: "Impact investing targets:",
+                        options: [
+                            "Financial returns only",
+                            "Specific positive outcomes with returns",
+                            "No ESG factors",
+                            "Negative screening only"
+                        ],
+                        correct: 1,
+                        explanation: "Impact investing specifically aims for measurable positive impact alongside returns."
+                    },
+                    {
+                        id: 15,
+                        category: "ESG Data",
+                        question: "ESG materiality refers to:",
+                        options: [
+                            "All factors are equal",
+                            "Environmental only",
+                            "Factors impacting business performance", 
+                            "Legal requirements only"
+                        ],
+                        correct: 2,
+                        explanation: "Material ESG factors are those likely to impact financial performance."
+                    }
+                ];
+
                 try {
-                    const response = await fetch('data/questions.json');
-                    const data = await response.json();
-                    
-                    // Get 5 random questions for quick quiz
-                    const allQuestions = data.quickQuizQuestions || [];
-                    this.questions = this.shuffleArray(allQuestions).slice(0, 5);
+                    // Get 5 random questions for the quiz
+                    this.questions = this.shuffleArray(integratedQuestions).slice(0, 5);
                     
                     if (this.questions.length > 0) {
                         this.startQuiz();
@@ -484,27 +679,6 @@
                     console.error('Error loading questions:', error);
                     this.showError("Failed to load questions. Please check your connection.");
                 }
-            }
-
-            shuffleArray(array) {
-                const shuffled = [...array];
-                for (let i = shuffled.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-                }
-                return shuffled;
-            }
-
-            checkDailyLimit() {
-                const availability = canPlayGame('quickQuiz');
-                
-                if (!availability.canPlay) {
-                    document.getElementById('limitWarning').style.display = 'block';
-                    document.getElementById('quizGame').style.display = 'none';
-                    return false;
-                }
-                
-                return true;
             }
 
             startQuiz() {
