@@ -1,4 +1,449 @@
-<script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESG Quick Quiz - Sustainable Learning</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .quiz-container {
+            max-width: 700px;
+            margin: 2rem auto;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .quiz-header h1 {
+            color: var(--primary-green);
+            margin-bottom: 1rem;
+        }
+
+        .quiz-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--glass-bg);
+            padding: 1rem;
+            border-radius: var(--border-radius-md);
+            text-align: center;
+            border: 1px solid var(--glass-border);
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--secondary-green);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            opacity: 0.8;
+            margin-top: 0.25rem;
+        }
+
+        .question-container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--border-radius-lg);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .question-number {
+            background: var(--primary-green);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        .time-remaining {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 15px;
+            font-weight: bold;
+        }
+
+        .time-warning {
+            background: rgba(239, 68, 68, 0.3);
+            border: 1px solid #EF4444;
+            animation: pulse 1s infinite;
+        }
+
+        .progress-container {
+            margin-bottom: 2rem;
+        }
+
+        .progress-bar {
+            background: rgba(255, 255, 255, 0.2);
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: var(--card-gradient);
+            height: 100%;
+            transition: width 0.5s ease;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            color: white;
+        }
+
+        .category-badge {
+            display: inline-block;
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--primary-green);
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--primary-green);
+        }
+
+        .options-container {
+            display: grid;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .option {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid transparent;
+            border-radius: var(--border-radius-md);
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 4px;
+            height: 100%;
+            background: transparent;
+            transition: background var(--transition-normal);
+        }
+
+        .option:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: var(--primary-green);
+            transform: translateX(5px);
+        }
+
+        .option:hover::before {
+            background: var(--primary-green);
+        }
+
+        .option.selected {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: var(--primary-green);
+            transform: translateX(5px);
+        }
+
+        .option.selected::before {
+            background: var(--primary-green);
+        }
+
+        .option.correct {
+            background: rgba(16, 185, 129, 0.3);
+            border-color: var(--primary-green);
+            animation: correctAnswer 0.6s ease-out;
+        }
+
+        .option.wrong {
+            background: rgba(239, 68, 68, 0.3);
+            border-color: #EF4444;
+            animation: wrongAnswer 0.6s ease-out;
+        }
+
+        .option.disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .quiz-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .quiz-info {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .token-indicator {
+            background: var(--card-gradient);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 15px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .results-screen {
+            display: none;
+            text-align: center;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .results-screen.show {
+            display: block;
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin: 2rem auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            position: relative;
+            background: conic-gradient(var(--primary-green) 0deg, var(--secondary-green) 180deg, rgba(255,255,255,0.2) 180deg);
+        }
+
+        .score-circle::before {
+            content: '';
+            position: absolute;
+            inset: 10px;
+            border-radius: 50%;
+            background: var(--bg-gradient);
+        }
+
+        .score-text {
+            position: relative;
+            z-index: 1;
+        }
+
+        .results-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .result-item {
+            background: var(--glass-bg);
+            padding: 1rem;
+            border-radius: var(--border-radius-md);
+            border: 1px solid var(--glass-border);
+        }
+
+        .result-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--secondary-green);
+        }
+
+        .explanation-section {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid var(--primary-green);
+            border-radius: var(--border-radius-md);
+            padding: 1.5rem;
+            margin: 1rem 0;
+            text-align: left;
+        }
+
+        .limit-warning {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid #EF4444;
+            border-radius: var(--border-radius-md);
+            padding: 1rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .premium-promotion {
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            color: #000;
+            border-radius: var(--border-radius-md);
+            padding: 1.5rem;
+            margin: 1rem 0;
+            text-align: center;
+        }
+
+        @keyframes correctAnswer {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes wrongAnswer {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+            100% { transform: translateX(0); }
+        }
+
+        @media (max-width: 768px) {
+            .quiz-container {
+                margin: 1rem;
+            }
+            
+            .question-container {
+                padding: 1.5rem;
+            }
+            
+            .quiz-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .quiz-controls {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="quiz-container">
+            <!-- Quiz Header -->
+            <div class="quiz-header">
+                <h1>🧠 ESG Quick Quiz</h1>
+                <p>Test your sustainable investing knowledge in 5 quick questions!</p>
+            </div>
+
+            <!-- Quiz Stats -->
+            <div class="quiz-stats">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalTokens">0</div>
+                    <div class="stat-label">Total Tokens</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="todayQuizzes">0</div>
+                    <div class="stat-label">Today's Quizzes</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="quizAccuracy">0%</div>
+                    <div class="stat-label">Quiz Accuracy</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="quizStreak">0</div>
+                    <div class="stat-label">Current Streak</div>
+                </div>
+            </div>
+
+            <!-- Daily Limit Warning -->
+            <div id="limitWarning" class="limit-warning" style="display: none;">
+                <h3>⏰ Daily Limit Reached</h3>
+                <p>You've completed your daily quiz limit. Come back tomorrow or <strong>upgrade to Premium</strong> for more games!</p>
+                <div class="premium-promotion">
+                    <h4>🌟 Premium Benefits</h4>
+                    <p>• 10 quizzes per day (vs 3 free)<br>• 3x token multiplier<br>• Exclusive weekly challenges</p>
+                    <button class="btn" onclick="upgradeToPremium()">Upgrade to Premium</button>
+                </div>
+            </div>
+
+            <!-- Quiz Game Area -->
+            <div id="quizGame" class="question-container">
+                <div class="question-header">
+                    <div class="question-number" id="questionNumber">Question 1 of 5</div>
+                    <div class="time-remaining" id="timeRemaining">2:00</div>
+                </div>
+
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                </div>
+
+                <div id="questionContent">
+                    <div class="category-badge" id="questionCategory">ESG Basics</div>
+                    <div class="question-text" id="questionText">Loading question...</div>
+                    <div class="options-container" id="optionsContainer">
+                        <!-- Options will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <div class="quiz-controls">
+                    <div class="quiz-info">
+                        <div class="token-indicator">
+                            🪙 <span id="potentialTokens">1-2 tokens</span>
+                        </div>
+                    </div>
+                    <button class="btn" id="nextButton" onclick="nextQuestion()" disabled>
+                        Next Question
+                    </button>
+                </div>
+            </div>
+
+            <!-- Results Screen -->
+            <div id="resultsScreen" class="results-screen">
+                <h2>🎉 Quiz Completed!</h2>
+                
+                <div class="score-circle">
+                    <div class="score-text" id="finalScore">0/5</div>
+                </div>
+
+                <div class="results-details">
+                    <div class="result-item">
+                        <div class="result-value" id="scorePercentage">0%</div>
+                        <div>Accuracy</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-value" id="tokensEarned">0</div>
+                        <div>Tokens Earned</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-value" id="timeUsed">0s</div>
+                        <div>Time Used</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-value" id="newStreak">0</div>
+                        <div>Current Streak</div>
+                    </div>
+                </div>
+
+                <div id="explanationSection" class="explanation-section">
+                    <h4>📚 Did You Know?</h4>
+                    <p id="randomFact">ESG investing has grown to over $35 trillion globally!</p>
+                </div>
+
+                <div class="flex-center" style="gap: 1rem; margin-top: 2rem;">
+                    <button class="btn" onclick="playAgain()">Play Again</button>
+                    <button class="btn btn-secondary" onclick="goHome()">Back to Games</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
         // === LOCAL STORAGE FUNCTIONS ===
         function getTotalTokens() {
             return parseInt(localStorage.getItem('esg_total_tokens')) || 0;
@@ -330,6 +775,50 @@
                 document.getElementById('nextButton').disabled = false;
             }
 
+            nextQuestion() {
+                if (this.selectedAnswer === null) return;
+                
+                const question = this.questions[this.currentQuestionIndex];
+                const isCorrect = this.selectedAnswer === question.correct;
+                
+                if (isCorrect) {
+                    this.score++;
+                }
+                
+                // Show correct answer
+                const options = document.querySelectorAll('.option');
+                options.forEach((option, index) => {
+                    option.classList.add('disabled');
+                    if (index === question.correct) {
+                        option.classList.add('correct');
+                    } else if (index === this.selectedAnswer && !isCorrect) {
+                        option.classList.add('wrong');
+                    }
+                });
+                
+                // Show explanation
+                if (question.explanation) {
+                    const explanationElement = document.createElement('div');
+                    explanationElement.className = 'explanation-section';
+                    explanationElement.innerHTML = `
+                        <h4>💡 Explanation</h4>
+                        <p>${question.explanation}</p>
+                    `;
+                    document.getElementById('questionContent').appendChild(explanationElement);
+                }
+                
+                // Wait before next question
+                setTimeout(() => {
+                    this.currentQuestionIndex++;
+                    
+                    if (this.currentQuestionIndex >= this.questions.length) {
+                        this.showResults();
+                    } else {
+                        this.loadCurrentQuestion();
+                    }
+                }, 2000);
+            }
+
             showResults() {
                 clearInterval(this.timer);
                 this.gameActive = false;
@@ -416,3 +905,5 @@
             quizGame = new ESGQuiz();
         });
     </script>
+</body>
+</html>
