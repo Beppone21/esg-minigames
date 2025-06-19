@@ -1,0 +1,12 @@
+📁 css/
+└── style.css          # Stili globali
+
+📁 js/  
+├── common.js          # Funzioni condivise
+├── quiz.js            # Logica quiz
+├── predictions.js     # Logica predizioni
+└── memory.js          # Logica memoria
+
+📁 data/
+├── questions.json     # Database domande
+└── etfs.json          # Dati ETF
