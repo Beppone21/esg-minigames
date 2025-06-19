@@ -255,4 +255,301 @@
         "Only focus on short-term price moves"
       ],
       "correct": 2,
-      "explanation": "ESG cr
+      "explanation": "ESG crises require careful evaluation of management response and long-term implications.",
+      "tokens": 3
+    },
+    {
+      "id": 103,
+      "category": "Company Analysis",
+      "difficulty": "hard",
+      "question": "When investigating a company's ESG practices, the most reliable sources are:",
+      "options": [
+        "Company marketing materials only",
+        "Third-party ESG ratings and sustainability reports",
+        "Social media sentiment only",
+        "Stock price performance only"
+      ],
+      "correct": 1,
+      "explanation": "Independent ESG ratings and verified sustainability reports provide objective analysis.",
+      "tokens": 4
+    }
+  ],
+  
+  "monthlyQuestions": [
+    {
+      "id": 201,
+      "category": "ESG Leadership",
+      "difficulty": "expert",
+      "question": "The most comprehensive ESG framework for global companies is:",
+      "options": [
+        "GRI Standards",
+        "SASB Standards", 
+        "TCFD Recommendations",
+        "All of the above integrated"
+      ],
+      "correct": 3,
+      "explanation": "Leading companies integrate GRI, SASB, and TCFD for comprehensive ESG reporting.",
+      "tokens": 10
+    },
+    {
+      "id": 202,
+      "category": "Climate Finance",
+      "difficulty": "expert",
+      "question": "The EU Taxonomy Regulation primarily aims to:",
+      "options": [
+        "Tax sustainable investments",
+        "Define environmentally sustainable economic activities",
+        "Penalize non-ESG companies",
+        "Set ESG fund fees"
+      ],
+      "correct": 1,
+      "explanation": "EU Taxonomy provides science-based criteria for environmental sustainability classification.",
+      "tokens": 12
+    },
+    {
+      "id": 203,
+      "category": "Advanced ESG",
+      "difficulty": "expert",
+      "question": "Science-Based Targets (SBTi) help companies:",
+      "options": [
+        "Reduce costs only",
+        "Set emissions targets aligned with climate science",
+        "Improve marketing",
+        "Increase profits"
+      ],
+      "correct": 1,
+      "explanation": "SBTi provides pathways for emission reductions consistent with limiting global warming.",
+      "tokens": 15
+    }
+  ],
+
+  "predictionMarkets": [
+    {
+      "id": 301,
+      "etf": "ICLN",
+      "name": "iShares Global Clean Energy",
+      "description": "Clean energy companies worldwide",
+      "esgFocus": "Environmental - Renewable Energy",
+      "currentTrends": [
+        "Government clean energy incentives",
+        "Corporate renewable adoption",
+        "Energy storage technology advances"
+      ]
+    },
+    {
+      "id": 302,
+      "etf": "ESGU", 
+      "name": "iShares MSCI USA ESG Select",
+      "description": "US companies with strong ESG profiles",
+      "esgFocus": "Comprehensive ESG - US Market",
+      "currentTrends": [
+        "ESG regulation implementation",
+        "Corporate sustainability reporting",
+        "Stakeholder capitalism adoption"
+      ]
+    },
+    {
+      "id": 303,
+      "etf": "EFIV",
+      "name": "SPDR MSCI Europe ESG Screened",
+      "description": "European companies with ESG screening",
+      "esgFocus": "Regional ESG - European Market", 
+      "currentTrends": [
+        "EU Green Deal implementation",
+        "Carbon border adjustments",
+        "Sustainable finance regulation"
+      ]
+    }
+  ],
+
+  "memoryGamePairs": [
+    {
+      "concept": "Carbon Neutral",
+      "definition": "Net zero carbon emissions",
+      "category": "Environmental"
+    },
+    {
+      "concept": "Stakeholder",
+      "definition": "All affected parties",
+      "category": "Social"
+    },
+    {
+      "concept": "Board Diversity",
+      "definition": "Varied board composition", 
+      "category": "Governance"
+    },
+    {
+      "concept": "ESG Integration",
+      "definition": "Including ESG in analysis",
+      "category": "Strategy"
+    },
+    {
+      "concept": "Impact Investing",
+      "definition": "Measurable positive outcomes",
+      "category": "Strategy"
+    },
+    {
+      "concept": "Greenwashing",
+      "definition": "Misleading green claims",
+      "category": "Risk"
+    },
+    {
+      "concept": "Science-Based Targets",
+      "definition": "Climate-aligned goals",
+      "category": "Environmental"
+    },
+    {
+      "concept": "Just Transition",
+      "definition": "Fair shift to sustainability",
+      "category": "Social"
+    }
+  ],
+
+  "gameSettings": {
+    "quickQuiz": {
+      "questionsPerSession": 5,
+      "timeLimitSeconds": 120,
+      "passingScore": 60,
+      "perfectScoreBonus": 1
+    },
+    "weeklyChallenge": {
+      "questionsPerSession": 3,
+      "timeLimitSeconds": 300,
+      "passingScore": 70,
+      "expertBonus": 2
+    },
+    "monthlyEvent": {
+      "questionsPerSession": 5,
+      "timeLimitSeconds": 600,
+      "passingScore": 80,
+      "championBonus": 5
+    },
+    "dailyPrediction": {
+      "predictionsPerDay": 1,
+      "resultDelayHours": 24,
+      "bonusForCorrect": 1
+    },
+    "memoryMatch": {
+      "pairsPerGame": 6,
+      "timeLimitSeconds": 60,
+      "streakBonus": 0.5
+    }
+  },
+
+  "achievements": {
+    "daily": [
+      {
+        "id": "quiz_beginner",
+        "name": "Quiz Beginner", 
+        "description": "Complete your first quick quiz",
+        "requirement": "Complete 1 quiz",
+        "tokens": 1,
+        "icon": "🧠"
+      },
+      {
+        "id": "prediction_starter",
+        "name": "Market Watcher",
+        "description": "Make your first market prediction", 
+        "requirement": "Make 1 prediction",
+        "tokens": 2,
+        "icon": "🔮"
+      },
+      {
+        "id": "memory_master",
+        "name": "Memory Champion",
+        "description": "Complete memory game under 30 seconds",
+        "requirement": "Complete memory game < 30s",
+        "tokens": 1,
+        "icon": "🃏"
+      }
+    ],
+    "weekly": [
+      {
+        "id": "portfolio_builder",
+        "name": "Portfolio Architect",
+        "description": "Build your first ESG portfolio",
+        "requirement": "Complete portfolio challenge",
+        "tokens": 5,
+        "icon": "🎯"
+      },
+      {
+        "id": "crisis_manager", 
+        "name": "Crisis Expert",
+        "description": "Handle ESG crisis expertly",
+        "requirement": "Score 90%+ on crisis challenge",
+        "tokens": 6,
+        "icon": "⚡"
+      }
+    ],
+    "monthly": [
+      {
+        "id": "knowledge_champion",
+        "name": "ESG Champion",
+        "description": "Win monthly knowledge championship",
+        "requirement": "Top 10% in monthly event",
+        "tokens": 15,
+        "icon": "🏆"
+      }
+    ],
+    "streaks": [
+      {
+        "id": "daily_streak_7",
+        "name": "Weekly Warrior",
+        "description": "Play games 7 days in a row",
+        "requirement": "7-day streak",
+        "tokens": 5,
+        "icon": "🔥"
+      },
+      {
+        "id": "perfect_week",
+        "name": "Perfect Week",
+        "description": "Score 100% on all games for a week",
+        "requirement": "7 perfect scores",
+        "tokens": 10,
+        "icon": "⭐"
+      }
+    ]
+  },
+
+  "seasonalEvents": {
+    "earthDay": {
+      "name": "Earth Day Challenge",
+      "period": "April 15-25",
+      "description": "Special environmental-focused challenges",
+      "bonusMultiplier": 2,
+      "specialRewards": [
+        {
+          "name": "Earth Guardian",
+          "tokens": 20,
+          "requirement": "Complete all Earth Day challenges"
+        }
+      ]
+    },
+    "sustainabilityWeek": {
+      "name": "Global Sustainability Week", 
+      "period": "September 20-26",
+      "description": "Week-long sustainability challenges",
+      "bonusMultiplier": 1.5,
+      "specialRewards": [
+        {
+          "name": "Sustainability Champion",
+          "tokens": 15,
+          "requirement": "Top performer in sustainability week"
+        }
+      ]
+    },
+    "climateWeek": {
+      "name": "Climate Action Week",
+      "period": "September 18-24", 
+      "description": "Climate-focused educational games",
+      "bonusMultiplier": 2,
+      "specialRewards": [
+        {
+          "name": "Climate Leader",
+          "tokens": 18,
+          "requirement": "Complete all climate challenges"
+        }
+      ]
+    }
+  }
+}
