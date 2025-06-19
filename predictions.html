@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESG Market Predictions - Sustainable Trading</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(16, 185, 129, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(52, 211, 153, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(6, 182, 212, 0.2) 0%, transparent 50%);
+            z-index: -1;
+            animation: backgroundShift 10s ease-in-out infinite;
+        }
+
+        @keyframes backgroundShift {
+            0%, 100% { 
+                background: 
+                    radial-gradient(circle at 20% 80%, rgba(16, 185, 129, 0.3) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 20%, rgba(52, 211, 153, 0.3) 0%, transparent 50%),
+                    radial-gradient(circle at 40% 40%, rgba(6, 182, 212, 0.2) 0%, transparent 50%);
+            }
+            50% { 
+                background: 
+                    radial-gradient(circle at 80% 20%, rgba(16, 185, 129, 0.4) 0%, transparent 50%),
+                    radial-gradient(circle at 20% 80%, rgba(52, 211, 153, 0.3) 0%, transparent 50%),
+                    radial-gradient(circle at 60% 60%, rgba(6, 182, 212, 0.3) 0%, transparent 50%);
+            }
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            background: linear-gradient(45deg, #10B981, #34D399, #6EE7B7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(15px);
+            padding: 1.5rem;
+            border-radius: 20px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(16, 185, 129, 0.2);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #34D399, #10B981);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .prediction-container {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 25px;
+            padding: 3rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+        }
+
+        .prediction-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #10B981, #34D399, #6EE7B7, #34D399, #10B981);
+            background-size: 200% 100%;
+            animation: gradientShift 3s linear infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+
+        .etf-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .etf-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .etf-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(16, 185, 129, 0.5);
+            box-shadow: 0 15px 35px rgba(16, 185, 129, 0.2);
+        }
+
+        .etf-card.selected {
+            border-color: #10B981;
+            background: rgba(16, 185, 129, 0.15);
+            box-shadow: 0 15px 35px rgba(16, 185, 129, 0.3);
+        }
+
+        .etf-ticker {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #10B981;
+            margin-bottom: 0.5rem;
+        }
+
+        .etf-name {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+
+        .etf-focus {
+            background: rgba(16, 185, 129, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .etf-trends {
+            margin-top: 1rem;
+        }
+
+        .trend-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.5rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .prediction-controls {
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #10B981, #059669);
+            border: none;
+            border-radius: 25px;
+            padding: 1rem 2rem;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+            margin: 0 1rem;
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .results-container {
+            display: none;
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .results-container.show {
+            display: block;
+        }
+
+        .result-message {
+            font-size: 1.5rem;
+            margin: 2rem 0;
+            padding: 2rem;
+            border-radius: 20px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .countdown {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 15px;
+            margin: 1rem 0;
+            font-size: 1.2rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .etf-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔮 ESG Market Predictions</h1>
+            <p>Predict which ESG ETF will perform best this week and earn tokens!</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="totalTokens">0</div>
+                <div>Total Tokens</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="predictions">0</div>
+                <div>Predictions Made</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="accuracy">0%</div>
+                <div>Accuracy</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="winStreak">0</div>
+                <div>Win Streak</div>
+            </div>
+        </div>
+
+        <div class="prediction-container">
+            <div id="predictionGame">
+                <h2 style="text-align: center; margin-bottom: 2rem;">🎯 Make Your Weekly Prediction</h2>
+                <p style="text-align: center; margin-bottom: 2rem; opacity: 0.9;">
+                    Based on current ESG trends and market analysis, which ETF do you think will perform best this week?
+                </p>
+
+                <div class="etf-grid" id="etfGrid">
+                    <!-- ETF cards will be populated by JavaScript -->
+                </div>
+
+                <div class="prediction-controls">
+                    <button class="btn" id="submitPrediction" onclick="submitPrediction()" disabled>
+                        Submit Prediction
+                    </button>
+                    <button class="btn btn-secondary" onclick="goHome()">
+                        Back to Games
+                    </button>
+                </div>
+            </div>
+
+            <div id="resultsContainer" class="results-container">
+                <h2>🎉 Prediction Submitted!</h2>
+                <div id="resultMessage" class="result-message"></div>
+                <div id="countdown" class="countdown"></div>
+                <button class="btn" onclick="newPrediction()">Make Another Prediction</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Game data
+        const etfData = [
+            {
+                ticker: "ICLN",
+                name: "iShares Global Clean Energy ETF",
+                focus: "Environmental - Clean Energy",
+                trends: [
+                    "🔋 Government clean energy incentives increasing",
+                    "⚡ Corporate renewable energy adoption rising",
+                    "🌱 Battery technology breakthroughs expected"
+                ]
+            },
+            {
+                ticker: "ESGU",
+                name: "iShares MSCI USA ESG Select ETF",
+                focus: "Comprehensive ESG - US Market",
+                trends: [
+                    "📊 ESG regulation compliance improving",
+                    "🏢 Corporate sustainability reporting expanding",
+                    "👥 Stakeholder capitalism adoption growing"
+                ]
+            },
+            {
+                ticker: "EFIV",
+                name: "SPDR MSCI Europe ESG Screened ETF",
+                focus: "Regional ESG - European Market",
+                trends: [
+                    "🇪🇺 EU Green Deal implementation accelerating",
+                    "💰 Carbon border adjustment mechanisms",
+                    "🌍 Sustainable finance regulations tightening"
+                ]
+            }
+        ];
+
+        let selectedETF = null;
+        let gameStats = {
+            totalTokens: parseInt(localStorage.getItem('esg_total_tokens')) || 0,
+            predictions: parseInt(localStorage.getItem('esg_predictions_made')) || 0,
+            accuracy: parseInt(localStorage.getItem('esg_prediction_accuracy')) || 0,
+            winStreak: parseInt(localStorage.getItem('esg_prediction_streak')) || 0
+        };
+
+        // Initialize game
+        document.addEventListener('DOMContentLoaded', function() {
+            loadETFs();
+            updateStats();
+            checkExistingPrediction();
+        });
+
+        function loadETFs() {
+            const etfGrid = document.getElementById('etfGrid');
+            etfGrid.innerHTML = '';
+
+            etfData.forEach((etf, index) => {
+                const etfCard = document.createElement('div');
+                etfCard.className = 'etf-card';
+                etfCard.onclick = () => selectETF(index);
+                
+                etfCard.innerHTML = `
+                    <div class="etf-ticker">${etf.ticker}</div>
+                    <div class="etf-name">${etf.name}</div>
+                    <div class="etf-focus">${etf.focus}</div>
+                    <div class="etf-trends">
+                        <strong>Current Trends:</strong>
+                        ${etf.trends.map(trend => `<div class="trend-item">${trend}</div>`).join('')}
+                    </div>
+                `;
+                
+                etfGrid.appendChild(etfCard);
+            });
+        }
+
+        function selectETF(index) {
+            selectedETF = index;
+            
+            // Update UI
+            const cards = document.querySelectorAll('.etf-card');
+            cards.forEach((card, i) => {
+                card.classList.remove('selected');
+                if (i === index) {
+                    card.classList.add('selected');
+                }
+            });
+            
+            document.getElementById('submitPrediction').disabled = false;
+        }
+
+        function submitPrediction() {
+            if (selectedETF === null) return;
+            
+            const prediction = {
+                etf: etfData[selectedETF].ticker,
+                timestamp: Date.now(),
+                weekOf: getWeekString()
+            };
+            
+            // Save prediction
+            localStorage.setItem('esg_current_prediction', JSON.stringify(prediction));
+            
+            // Update stats
+            gameStats.predictions++;
+            localStorage.setItem('esg_predictions_made', gameStats.predictions);
+            
+            // Show results
+            showPredictionResults(prediction);
+        }
+
+        function showPredictionResults(prediction) {
+            document.getElementById('predictionGame').style.display = 'none';
+            document.getElementById('resultsContainer').classList.add('show');
+            
+            const resultMessage = document.getElementById('resultMessage');
+            resultMessage.innerHTML = `
+                <h3>📈 Prediction: ${prediction.etf}</h3>
+                <p>You've predicted that <strong>${prediction.etf}</strong> will be the best performing ESG ETF this week!</p>
+                <p>Results will be available next Monday. Check back to see if you were right!</p>
+                <div style="margin-top: 1rem; padding: 1rem; background: rgba(16, 185, 129, 0.2); border-radius: 10px;">
+                    <strong>🎁 Potential Rewards:</strong><br>
+                    Correct: 3 tokens | Participation: 1 token
+                </div>
+            `;
+            
+            startCountdown();
+        }
+
+        function startCountdown() {
+            const countdownEl = document.getElementById('countdown');
+            
+            function updateCountdown() {
+                const now = new Date();
+                const nextMonday = new Date();
+                nextMonday.setDate(now.getDate() + (1 + 7 - now.getDay()) % 7);
+                nextMonday.setHours(9, 0, 0, 0);
+                
+                const diff = nextMonday - now;
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                
+                countdownEl.innerHTML = `
+                    ⏰ Results in: ${days}d ${hours}h ${minutes}m
+                `;
+            }
+            
+            updateCountdown();
+            setInterval(updateCountdown, 60000);
+        }
+
+        function checkExistingPrediction() {
+            const existing = localStorage.getItem('esg_current_prediction');
+            if (existing) {
+                const prediction = JSON.parse(existing);
+                const currentWeek = getWeekString();
+                
+                if (prediction.weekOf === currentWeek) {
+                    showPredictionResults(prediction);
+                }
+            }
+        }
+
+        function newPrediction() {
+            // Check daily limit
+            const today = new Date().toISOString().split('T')[0];
+            const todayPredictions = parseInt(localStorage.getItem(`esg_predictions_${today}`)) || 0;
+            
+            if (todayPredictions >= 1) {
+                alert('⏰ Daily limit reached! Come back tomorrow for a new prediction.');
+                return;
+            }
+            
+            document.getElementById('predictionGame').style.display = 'block';
+            document.getElementById('resultsContainer').classList.remove('show');
+            selectedETF = null;
+            
+            // Reset selection
+            const cards = document.querySelectorAll('.etf-card');
+            cards.forEach(card => card.classList.remove('selected'));
+            document.getElementById('submitPrediction').disabled = true;
+        }
+
+        function updateStats() {
+            document.getElementById('totalTokens').textContent = gameStats.totalTokens;
+            document.getElementById('predictions').textContent = gameStats.predictions;
+            document.getElementById('accuracy').textContent = gameStats.accuracy + '%';
+            document.getElementById('winStreak').textContent = gameStats.winStreak;
+        }
+
+        function getWeekString() {
+            const today = new Date();
+            const firstDayOfYear = new Date(today.getFullYear(), 0, 1);
+            const pastDaysOfYear = (today - firstDayOfYear) / 86400000;
+            const weekNumber = Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
+            return `${today.getFullYear()}-W${weekNumber}`;
+        }
+
+        function goHome() {
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>
