@@ -65,6 +65,17 @@
             background: rgba(255, 255, 255, 0.15);
         }
 
+        .game-card.coming-soon {
+            opacity: 0.7;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .game-card.coming-soon:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
         .game-icon {
             font-size: 4rem;
             margin-bottom: 1rem;
@@ -106,6 +117,16 @@
         .play-button:hover {
             transform: scale(1.05);
             box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4);
+        }
+
+        .play-button.coming-soon {
+            background: linear-gradient(45deg, #6B7280, #4B5563);
+            cursor: not-allowed;
+        }
+
+        .play-button.coming-soon:hover {
+            transform: none;
+            box-shadow: none;
         }
 
         .stats-section {
@@ -160,6 +181,19 @@
             opacity: 0.8;
         }
 
+        .coming-soon-badge {
+            background: #FFA500;
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            animation: pulse 2s infinite;
+        }
+
         @keyframes fadeInDown {
             from {
                 opacity: 0;
@@ -206,6 +240,12 @@
             50% {
                 transform: translateY(-20px) rotate(180deg);
             }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
         }
 
         @media (max-width: 768px) {
@@ -262,6 +302,7 @@
         </div>
 
         <div class="games-grid">
+            <!-- Quiz Game - Funzionante -->
             <div class="game-card" onclick="window.open('quiz.html', '_blank')">
                 <div class="game-icon">🧠</div>
                 <div class="game-title">ESG Knowledge Quiz</div>
@@ -276,6 +317,7 @@
                 <button class="play-button">Start Quiz</button>
             </div>
 
+            <!-- Predictions Game - Funzionante -->
             <div class="game-card" onclick="window.open('predictions.html', '_blank')">
                 <div class="game-icon">🔮</div>
                 <div class="game-title">Market Predictions</div>
@@ -290,7 +332,9 @@
                 <button class="play-button">Make Prediction</button>
             </div>
 
-            <div class="game-card" onclick="playMemory()">
+            <!-- Memory Game - Coming Soon -->
+            <div class="game-card coming-soon" onclick="showComingSoon('ESG Memory Match')">
+                <div class="coming-soon-badge">Coming Soon</div>
                 <div class="game-icon">🃏</div>
                 <div class="game-title">ESG Memory Match</div>
                 <div class="game-description">
@@ -301,10 +345,12 @@
                     <strong>🎲 Rewards: 1-5 tokens</strong><br>
                     <small>Quick and fun learning!</small>
                 </div>
-                <button class="play-button">Play Memory</button>
+                <button class="play-button coming-soon">Available Soon</button>
             </div>
 
-            <div class="game-card" onclick="playStrategy()">
+            <!-- Portfolio Builder - Coming Soon -->
+            <div class="game-card coming-soon" onclick="showComingSoon('Portfolio Builder')">
+                <div class="coming-soon-badge">Coming Soon</div>
                 <div class="game-icon">🎯</div>
                 <div class="game-title">Portfolio Builder</div>
                 <div class="game-description">
@@ -315,7 +361,7 @@
                     <strong>📈 Rewards: 5-15 tokens</strong><br>
                     <small>Strategy meets sustainability!</small>
                 </div>
-                <button class="play-button">Build Portfolio</button>
+                <button class="play-button coming-soon">Available Soon</button>
             </div>
         </div>
 
@@ -386,89 +432,79 @@
             }, 2000);
         }
 
-        // Game functions
-        function playQuiz() {
-            // Simple quiz implementation
-            const questions = [
-                {
-                    q: "What does ESG stand for?",
-                    options: ["Environmental, Social, Governance", "Economic, Social, Global", "Energy, Sustainability, Growth"],
-                    correct: 0
-                },
-                {
-                    q: "Which is a key Environmental factor in ESG?",
-                    options: ["Board diversity", "Carbon emissions", "Executive compensation"],
-                    correct: 1
-                },
-                {
-                    q: "What is the main goal of ESG investing?",
-                    options: ["Maximum profit only", "Sustainable long-term returns", "Short-term gains"],
-                    correct: 1
+        // Show "Coming Soon" message
+        function showComingSoon(gameName) {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.8);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 2000;
+                animation: fadeIn 0.3s ease-out;
+            `;
+            
+            const content = document.createElement('div');
+            content.style.cssText = `
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 3rem;
+                border-radius: 20px;
+                text-align: center;
+                max-width: 500px;
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+                animation: bounceIn 0.5s ease-out;
+            `;
+            
+            content.innerHTML = `
+                <div style="font-size: 3rem; margin-bottom: 1rem;">🚀</div>
+                <h2 style="color: #34D399; margin-bottom: 1rem;">${gameName}</h2>
+                <p style="margin-bottom: 2rem; font-size: 1.1rem; line-height: 1.6;">
+                    This exciting game is currently under development! 
+                    We're working hard to bring you the best ESG gaming experience.
+                </p>
+                <div style="background: rgba(255, 255, 255, 0.1); padding: 1rem; border-radius: 10px; margin-bottom: 2rem;">
+                    <strong>🔔 Get notified when it's ready!</strong><br>
+                    <small>Follow our updates for the latest releases</small>
+                </div>
+                <button onclick="closeModal()" style="
+                    background: linear-gradient(45deg, #10B981, #059669);
+                    border: none;
+                    border-radius: 25px;
+                    padding: 1rem 2rem;
+                    color: white;
+                    font-weight: bold;
+                    cursor: pointer;
+                    font-size: 1rem;
+                ">Got it! 👍</button>
+            `;
+            
+            modal.appendChild(content);
+            document.body.appendChild(modal);
+            
+            // Close modal function
+            window.closeModal = function() {
+                modal.remove();
+                delete window.closeModal;
+            };
+            
+            // Close on outside click
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    window.closeModal();
                 }
-            ];
-            
-            let score = 0;
-            let currentQ = 0;
-            
-            function askQuestion() {
-                if (currentQ >= questions.length) {
-                    const tokens = 2 + score * 2;
-                    addTokens(tokens);
-                    alert(`Quiz completed! Score: ${score}/${questions.length}\nTokens earned: ${tokens}`);
-                    return;
-                }
-                
-                const q = questions[currentQ];
-                const answer = prompt(`${q.q}\n\n${q.options.map((opt, i) => `${i + 1}. ${opt}`).join('\n')}\n\nEnter 1, 2, or 3:`);
-                
-                if (answer && parseInt(answer) - 1 === q.correct) {
-                    score++;
-                    alert("Correct! ✅");
-                } else {
-                    alert("Wrong answer ❌");
-                }
-                
-                currentQ++;
-                setTimeout(askQuestion, 1000);
-            }
-            
-            askQuestion();
-        }
-
-        function playPredictions() {
-            const etfs = ["ICLN", "ESGU", "EFIV"];
-            const prediction = prompt(`Which ESG ETF will perform best this week?\n\n1. ICLN (Clean Energy)\n2. ESGU (USA ESG)\n3. EFIV (Europe ESG)\n\nEnter 1, 2, or 3:`);
-            
-            if (prediction) {
-                const randomWinner = Math.floor(Math.random() * 3);
-                const correct = parseInt(prediction) - 1 === randomWinner;
-                const tokens = correct ? 15 : 5;
-                
-                addTokens(tokens);
-                alert(correct ? 
-                    `🎉 Correct prediction! ${etfs[randomWinner]} won!\nTokens earned: ${tokens}` :
-                    `❌ Wrong prediction. ${etfs[randomWinner]} actually won.\nConsollation tokens: ${tokens}`
-                );
-            }
-        }
-
-        function playMemory() {
-            const cards = ["🌱", "♻️", "🌍", "⚡", "🌱", "♻️", "🌍", "⚡"];
-            const tokens = 3;
-            addTokens(tokens);
-            alert(`🃏 Memory game completed!\n(Full game coming soon)\nTokens earned: ${tokens}`);
-        }
-
-        function playStrategy() {
-            const tokens = 8;
-            addTokens(tokens);
-            alert(`🎯 Portfolio building completed!\n(Advanced version coming soon)\nTokens earned: ${tokens}`);
+            });
         }
 
         // Initialize
         updateStatsDisplay();
 
-        // Add CSS animation
+        // Add CSS animations
         const style = document.createElement('style');
         style.textContent = `
             @keyframes bounceIn {
